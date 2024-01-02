@@ -95,6 +95,7 @@ class MyWin(QWidget):
 
         self.button_selModel.clicked.connect(self.selModelGrp)
         self.button_selExPath.clicked.connect(self.selPath)
+        self.button_expShader.clicked.connect(self.export_shader)
         self.button_expModel.clicked.connect(self.export_MS)
         self.button_selLight.clicked.connect(self.lightListAddMul)
         self.button_Ladd.clicked.connect(self.lightListAddNew)
@@ -136,6 +137,7 @@ class MyWin(QWidget):
     def export_shader(self):
         if self.savePath and self.saveNam:
             a = exportShaderData.GeoShaderNet()
+            a.setSel(self.selGrp)
             a.setSavePath(self.savePath + self.saveNam + '.txt')
             a.getGeoData()
             a.getShaderData()
@@ -151,16 +153,17 @@ class MyWin(QWidget):
 
     def export_MS(self):
         if self.savePath and self.saveNam:
+            print(11111111111)
             self.checkParm()
             T = model_export.TransRigModel()
-            T.sel = self.selGrp
+            T.setSel(self.selGrp)
             T.debugMode = self.DM
             T.needBake = self.check_parm['bakeAnim']
             T.BSexport = self.check_parm['exportBS']
             T.deleteOrg = self.check_parm['delOrigin']
             #a.debugMode = 0
-            T.objectFilter()
-            T.animJointPresentOp()
+            sig1 = T.objectFilter()
+            sig2 = T.animJointPresentOp()
 
 
 
@@ -219,7 +222,6 @@ class MyWin(QWidget):
         except:
             QMessageBox.information(self, u'错误', u'FileSaveDialog open  failed', QMessageBox.Yes, QMessageBox.Yes)
         if filespath:
-            index = filespath[0].rfind('/')
             self.lightSavePath = filespath[0][:-4]
         else:
             QMessageBox.information(self, u'错误', u'未能读取到保存文件路径  请检查', QMessageBox.Yes, QMessageBox.Yes)
